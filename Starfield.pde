@@ -1,20 +1,19 @@
-//your code here
-void setup()
-{
-	//your code here
-}
-void draw()
-{
-	//your code here
-}
-class Particle
-{
-	//your code here
+void setup() {
+  
 }
 
-class OddballParticle //inherits from Particle
-{
-	//your code here
+void draw() {
+  
 }
 
+class Particle {
+  public Particle() {
+    
+  }
+}
 
+class OddballParticle extends Particle {
+  public OddballParticle() {
+    super();
+  }
+}
