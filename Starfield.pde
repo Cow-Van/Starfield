@@ -1,4 +1,4 @@
-import java.util.ListIterator;
+import java.util.Iterator;
 
 private final float G = 6.6743 * pow(10, -11);
 private final PhysicsHelper physicsHelper = new PhysicsHelper();
@@ -12,14 +12,14 @@ public void setup() {
 }
 
 public void draw() {
-  ListIterator<Particle> particlesIterator = particles.listIterator();
+  Iterator<Particle> particlesIterator = particles.iterator();
   
   while(particlesIterator.hasNext()) {
     Particle particle = particlesIterator.next();
     
     if (particle.toDelete()) {
       particles.remove(particle);
-      particlesIterator = particles.listIterator();
+      particlesIterator = particles.iterator();
     } else {
       particle.move();
       particle.show();
