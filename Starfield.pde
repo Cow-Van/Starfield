@@ -7,8 +7,8 @@ private final ArrayList<Particle> particles = new ArrayList();
 public void setup() {
   size(500, 500);
   
-  particles.add(new OddballParticle(150, 150, 1, 0, 1));
-  particles.add(new Particle(300, 300, 1, 0, 1));
+  particles.add(new OddballParticle(150, 150, new Vector(1, 0), 1));
+  particles.add(new Particle(300, 300, new Vector(1, 0), 1));
 }
 
 public void draw() {
@@ -33,22 +33,23 @@ private class Particle {
   
   protected float x;
   protected float y;
-  protected float direction;
-  protected float velocity;
+  protected Vector velocity;
   protected boolean delete = false;
-  protected float netForce = 0;
-  protected float acceleration = 0;
+  protected Vector netForce = new Vector(0, 0);
+  protected Vector acceleration = new Vector(0, 0);
   
-  public Particle(float x, float y, float velocity, float direction, float mass) {
+  public Particle(float x, float y, Vector velocity, float mass) {
     this.x = x;
     this.y = y;
     this.velocity = velocity;
-    this.direction = direction;
     this.mass = mass;
   }
   
   public void move() {
-    
+    acceleration = physicsHelper.acceleration(this);
+    velocity = physicsHelper.addVectors(velocity, acceleration);
+    x += velocity.getX();
+    y += velocity.getY();
   }
   
   public void show() {
@@ -71,7 +72,7 @@ private class Particle {
     return y;
   }
   
-  public float getNetForce() {
+  public Vector getNetForce() {
     return netForce;
   }
 }
@@ -79,8 +80,8 @@ private class Particle {
 private class OddballParticle extends Particle {
   private final float size = 30;
   
-  public OddballParticle(float x, float y, float speed, float direction, float mass) {
-    super(x, y, speed, direction, mass);
+  public OddballParticle(float x, float y, Vector velocity, float mass) {
+    super(x, y, velocity, mass);
   }
   
   public void move() {
@@ -129,8 +130,8 @@ private class PhysicsHelper {
     return G * p1.getMass() * p2.getMass() / pow(dist(p1.getX(), p1.getY(), p2.getX(), p2.getY()), 2);
   }
   
-  public float acceleration(Particle p) {
-    return p.getNetForce() / p.getMass();
+  public Vector acceleration(Particle p) {
+    return new Vector(p.getNetForce().getMagnitude() / p.getMass(), p.getNetForce().getDirection());
   }
   
   public Vector addVectors(Vector v1, Vector v2) {
