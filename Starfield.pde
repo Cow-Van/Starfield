@@ -40,6 +40,7 @@ public void draw() {
 }
 
 private class Particle {
+  protected int id;
   protected final float size = 15;
   protected final float mass;
   protected final float speed;
@@ -57,11 +58,12 @@ private class Particle {
     this.velocity = velocity;
     this.mass = mass;
     this.speed = speed;
+    this.id = 0;
   }
   
   public void move() {
     for (int i = 0; i < particles.size(); i++) {
-      if (particles.get(i) instanceof OddballParticle) {
+      if (particles.get(i).getId() == 1) {
         netForce = physicsHelper.addVectors(netForce, physicsHelper.gravitationalForce(this, particles.get(i)));
       }
     }
@@ -101,6 +103,10 @@ private class Particle {
   public Vector getNetForce() {
     return netForce;
   }
+  
+  public int getId() {
+    return id;
+  }
 }
 
 private class OddballParticle extends Particle {
@@ -108,6 +114,7 @@ private class OddballParticle extends Particle {
   
   public OddballParticle(float x, float y, Vector velocity, float mass, float speed) {
     super(x, y, velocity, mass, speed);
+    id = 1;
   }
   
   public void move() {
