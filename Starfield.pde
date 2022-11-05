@@ -46,6 +46,12 @@ private class Particle {
   }
   
   public void move() {
+    for (int i = 0; i < particles.size(); i++) {
+      if (particles.get(i) != this) {
+        netForce = physicsHelper.addVectors(netForce, new Vector(physicsHelper.gravitationalForce(this, particles.get(i)), physicsHelper.xyVector(x - particles.get(i).getX(), y - particles.get(i).getY()).getDirection()));
+      }
+    }
+    
     acceleration = physicsHelper.acceleration(this);
     velocity = physicsHelper.addVectors(velocity, acceleration);
     x += velocity.getX();
@@ -126,7 +132,7 @@ private class Vector {
 private class PhysicsHelper {
   public PhysicsHelper() {}
   
-  public float gravitionalForce(Particle p1, Particle p2) {
+  public float gravitationalForce(Particle p1, Particle p2) {
     return G * p1.getMass() * p2.getMass() / pow(dist(p1.getX(), p1.getY(), p2.getX(), p2.getY()), 2);
   }
   
