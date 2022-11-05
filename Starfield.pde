@@ -5,10 +5,10 @@ private final PhysicsHelper physicsHelper = new PhysicsHelper();
 private final ArrayList<Particle> particles = new ArrayList();
 
 public void setup() {
-  Vector v1 = new Vector(10, degrees(180));
-  Vector v2 = new Vector(10, degrees(180));
-  Vector v3 = physicsHelper.addVectors(v1, v2);
-  System.out.println(v3.getMagnitude() + " " + degrees(v3.getDirection()));
+  size(500, 500);
+  
+  particles.add(new OddballParticle(150, 150, 1, 0, 1));
+  particles.add(new Particle(300, 300, 1, 0, 1));
 }
 
 public void draw() {
@@ -28,15 +28,16 @@ public void draw() {
 }
 
 private class Particle {
-  private final float mass;
+  protected final float size = 15;
+  protected final float mass;
   
-  private float x;
-  private float y;
-  private float direction;
-  private float velocity;
-  private boolean delete = false;
-  private float netForce = 0;
-  private float acceleration = 0;
+  protected float x;
+  protected float y;
+  protected float direction;
+  protected float velocity;
+  protected boolean delete = false;
+  protected float netForce = 0;
+  protected float acceleration = 0;
   
   public Particle(float x, float y, float velocity, float direction, float mass) {
     this.x = x;
@@ -51,7 +52,7 @@ private class Particle {
   }
   
   public void show() {
-    
+    ellipse(x, y, size, size);
   }
   
   public boolean toDelete() {
@@ -76,6 +77,8 @@ private class Particle {
 }
 
 private class OddballParticle extends Particle {
+  private final float size = 30;
+  
   public OddballParticle(float x, float y, float speed, float direction, float mass) {
     super(x, y, speed, direction, mass);
   }
@@ -85,17 +88,21 @@ private class OddballParticle extends Particle {
   }
   
   public void show() {
-    
+    ellipse(x, y, size, size);
   }
 }
 
 private class Vector {
   private final float magnitude;
   private final float direction;
+  private final float x;
+  private final float y;
   
   public Vector(float magnitude, float direction) {
     this.magnitude = magnitude;
     this.direction = direction;
+    this.x = magnitude * cos(direction);
+    this.y = magnitude * sin(direction);
   }
   
   public float getMagnitude() {
@@ -104,6 +111,14 @@ private class Vector {
   
   public float getDirection() {
     return direction;
+  }
+  
+  public float getX() {
+    return x;
+  }
+  
+  public float getY() {
+    return y;
   }
 }
 
@@ -119,14 +134,12 @@ private class PhysicsHelper {
   }
   
   public Vector addVectors(Vector v1, Vector v2) {
-    float v1x = v1.getMagnitude() * cos(v1.getDirection());
-    float v1y = v1.getMagnitude() * sin(v1.getDirection());
-    float v2x = v2.getMagnitude() * cos(v2.getDirection());
-    float v2y = v2.getMagnitude() * sin(v2.getDirection());
-    
-    float magnitude = sqrt(pow(v1x + v2x, 2) + pow(v1y + v2y, 2));
-    float direction = atan((v1y + v2y)/(v1x + v2x));
-    
+    return xyVector(v1.getX() + v2.getX(), v1.getY() + v2.getY());
+  }
+  
+  public Vector xyVector(float x, float y) {    
+    float magnitude = sqrt(x * x + y * y);
+    float direction = (y < 0) ? -acos(x / magnitude) : acos(x / magnitude);
     return new Vector(magnitude, direction);
   }
 }
